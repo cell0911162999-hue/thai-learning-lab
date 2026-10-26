@@ -1,109 +1,337 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Thai Learning Lab v1.8</title><style>:root{font-family:system-ui,-apple-system,sans-serif;color:#263443;background:#fafbfc}body{margin:0;padding:22px 14px}.app{max-width:640px;margin:auto}header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}h1{font-size:22px;margin:0}small{color:#687587}.tag{background:#e8edf2;padding:7px 11px;border-radius:30px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:17px 8px;border-radius:16px;text-align:center;background:white;border:1px solid #edf0f3}.stat strong{display:block;font-size:24px}.tabs{display:flex;gap:8px;margin:20px 0}.tabs button{flex:1}button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:13px 14px;background:#e9edf2;color:#273747}button.active{background:#304a68;color:white}.panel{padding:24px 18px;border-radius:22px;min-height:260px}.blue{background:#eaf4ff}.purple{background:#f1ebff}.green{background:#e9f7ef}.peach{background:#fff2e8}.field{width:100%;box-sizing:border-box;border:1px solid #d5dce4;border-radius:10px;padding:12px;font:inherit;background:white}.hint{font-size:13px;color:#596b7d;line-height:1.6}.preview{max-height:250px;overflow:auto;background:white;border-radius:12px;padding:10px;margin-top:12px}.previewrow{padding:9px;border-bottom:1px solid #e5e7eb;font-size:14px}.warning{color:#a43c30}.success{color:#207447}.center{text-align:center}.thai{font-size:39px;margin:22px 0 5px}.roman{font-size:19px;color:#435b72}.meaning{font-size:24px;font-weight:700;margin:17px 0}.muted{color:#5f7080}.primary{background:#325f8b;color:white}.purplebutton{background:#7552a7;color:white}.greenbutton{background:#2d8058;color:white}.actions{display:flex;gap:8px;margin-top:12px}.actions button{flex:1}.wide{width:100%;margin-top:12px}.hidden{display:none}.option{display:block;width:100%;text-align:left;background:white;border:1px solid #d7c8ee;margin:9px 0}.option.correct{border:2px solid #288259}.option.wrong{border:2px solid #b64747}.examplebox{background:#fff;border:1px solid #d7e7f5;border-radius:15px;padding:15px;margin:18px 0;text-align:left}.examplebox h3{margin:0 0 10px;font-size:14px;color:#526d89}.examplebox .exthai{font-size:23px;margin:6px 0}.examplebox .exroman{color:#325f8b;margin:6px 0}.examplebox .exzh{color:#4b5c6c;margin:8px 0}.wordrow{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #cce7d7}#notice{font-size:13px;min-height:20px;color:#536575;margin-top:8px}footer{margin-top:22px;font-size:12px;color:#6c7884;line-height:1.6} .ratinggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.ratinggrid button{padding:13px 4px;font-size:14px}.ratinggrid small{display:block;font-size:11px;margin-top:4px}.duedate{background:#fff;border-radius:12px;padding:12px;margin-top:12px;font-size:14px}.option .optroman{display:block;color:#536b85;font-size:14px;margin-top:4px}.option:disabled{opacity:1}.modegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}.modegrid button{font-size:13px;padding:12px 5px;background:#fff}.modegrid button.chosen{background:#7552a7;color:#fff}.quizprompt{background:#fff;border-radius:16px;padding:24px 12px;text-align:center;margin:14px 0}.quizprompt .emoji{font-size:58px}.quizprompt h3{margin:8px}.quizfeedback{font-weight:600;margin-top:12px}.subtle{font-size:13px;color:#66547c} @media(max-width:420px){.tabs{gap:4px}.tabs button{padding:11px 4px;font-size:13px}}.reviewboard{margin-top:14px;padding:18px;border-radius:20px;background:#f1ebff}.reviewboard h2{font-size:18px;margin:0 0 6px}.reviewboard .today{font-size:34px;font-weight:750;color:#684b9b}.reviewdays{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:15px}.reviewday{background:white;border-radius:10px;text-align:center;padding:9px 1px}.reviewday strong{display:block;font-size:17px}.reviewday small{font-size:10px}.reviewboard .note{font-size:12px;color:#66547c;line-height:1.5;margin:10px 0 0} .motivation{background:#edf7f2;border-radius:20px;padding:17px;margin:14px 0}.motivation h2{font-size:18px;margin:0 0 10px}.motivation select{padding:8px;border-radius:9px;border:1px solid #bdd5c9;font-size:16px}.motivation progress{width:100%;height:15px;accent-color:#3b916e}.motivation .positive{color:#267452;font-weight:600}.contextbox{margin-top:12px;background:#fff7e9;padding:14px;border-radius:12px}.contextbox button{margin-top:8px}.reviewnotice{color:#92532b;font-weight:600}.successnote{color:#267452;font-weight:600}</style></head><body><main class="app"><header><div><h1>Thai Learning Lab</h1><small>我的泰語學習室</small></div><span class="tag">v1.8</span></header><section class="stats"><div class="stat"><strong id="total">6</strong><small>總單字</small></div><div class="stat"><strong id="knownCount">0</strong><small>已熟悉</small></div><div class="stat"><strong id="answeredCount">0</strong><small>已答題</small></div></section><section class="reviewboard" aria-label="今日待複習"><h2>今日待複習</h2><div><span id="todayDue" class="today">0</span> 個單字需要複習</div><p id="dueBreakdown" class="hint"></p><button id="startToday" class="purplebutton wide">開始今日複習</button><div id="reviewDays" class="reviewdays" aria-label="未來七天預定複習數量"></div><p class="note">未學過或已到期的單字算入今天；未來七天顯示當日預定到期的數量，不包含今天尚未完成的累積題目。</p></section><section class="motivation" aria-label="自主學習目標"><h2>我的今日學習目標</h2><label for="dailyGoal">今天想練習 <select id="dailyGoal"><option value="5">5</option><option value="10">10</option><option value="15">15</option></select> 個單字</label><p id="goalStatus" aria-live="polite"></p><progress id="goalProgress" max="10" value="0"></progress><p id="growthStatus" class="positive"></p><p id="learningFeedback" class="hint"></p><div class="contextbox"><strong>今日情境任務</strong><p id="contextTask"></p><button id="newContext" class="primary">換一個情境</button></div></section><nav class="tabs"><button id="tabLearn" class="active">單字卡</button><button id="tabQuiz">測驗</button><button id="tabProgress">進度</button><button id="tabImport">單字管理</button></nav><section id="learn" class="panel blue"><div class="center"><small id="position"></small><div class="thai" id="thai"></div><div class="roman" id="roman"></div><p class="muted" id="syllables"></p><button id="speak" class="primary">🔊 聽泰語發音</button><p id="notice" role="status"></p><div id="meaning" class="meaning hidden"></div><div id="exampleBox" class="examplebox hidden"><h3>情境例句</h3><div id="exampleThai" class="exthai"></div><div id="exampleRoman" class="exroman"></div><div id="exampleZh" class="exzh"></div><button id="speakExample" class="primary wide">🔊 聽例句發音</button></div><button id="flip" class="wide">翻開中文解釋</button></div><div class="actions"><button id="prev">上一張</button><button id="next">下一張</button></div><button id="mark" class="wide">標記為已熟悉</button></section><section id="quiz" class="panel purple hidden"><div class="modegrid"><button id="modeListen" class="chosen">🎧 聽力</button><button id="modeRecall">🧠 中文翻牌</button><button id="modePicture">🖼️ 圖示配對</button></div><div id="quizContent"></div></section><section id="progress" class="panel green hidden"><h2>我的學習進度</h2><p id="summary"></p><div id="wordlist"></div><button id="reset" class="wide">清除學習紀錄</button></section><section id="import" class="panel peach hidden"><h2>批次匯入單字</h2><p class="hint">每行一筆，以 Tab（試算表複製）或逗號分隔；例句請填完整三欄。依序填入：泰文、附聲調的羅馬拼音、中文意思、分類、音節拆解、例句泰文、例句拼音、例句中文。分類、音節與例句可留空。</p><textarea id="pasteWords" class="field" rows="6" placeholder="กินข้าว,gin-khâao,吃飯,生活,gin · khâao"></textarea><div class="actions"><button id="previewImport" class="primary">預覽匯入</button><button id="fileButton">選擇 CSV 檔</button></div><input type="file" id="csvFile" accept=".csv,text/csv,text/plain" class="hidden"><div id="importStatus" class="hint" role="status"></div><div id="importPreview" class="preview hidden"></div><button id="confirmImport" class="wide greenbutton hidden">確認加入單字</button><h3>備份與管理</h3><p class="hint">匯出 CSV 可保存單字。單字與學習紀錄目前儲存在此瀏覽器，不會自動同步到其他裝置。</p><button id="exportCsv" class="wide">匯出全部單字 CSV</button></section><footer>v1.8 新增自主目標、能力成長、答錯重練與情境任務；v1.7 新增今日待複習與未來七天排程；v1.6 新增熟悉度間隔複習（1／3／5 天），圖示選項顯示附聲調拼音；保留三種測驗模式（聽力、中文翻牌、圖示配對），並保留例句與發音；自訂單字可透過八欄 CSV 匯入例句。此版本會將學習紀錄儲存在目前瀏覽器的本機儲存空間；清除網站資料或改用其他裝置可能導致紀錄消失。泰語羅馬拼音以符號表示聲調：ā（平聲）、à（低聲）、â（降聲）、á（高聲）、ǎ（升聲）；拼音是學習輔助，請搭配泰語發音。匯入的自訂拼音不會自動推算聲調。</footer></main><script>
-const defaults=[{th:'สวัสดี',ro:'sà-wàt-dii',zh:'你好',sy:'sà · wàt · dii'},{th:'ขอบคุณ',ro:'khɔ̀ɔp-khun',zh:'謝謝',sy:'khɔ̀ɔp · khun'},{th:'สบายดีไหม',ro:'sà-baai-dii mǎi',zh:'你好嗎？',sy:'sà · baai · dii · mǎi'},{th:'ทำงาน',ro:'tham-ngaan',zh:'工作',sy:'tham · ngaan'},{th:'กินข้าว',ro:'gin-khâao',zh:'吃飯',sy:'gin · khâao'},{th:'วันนี้',ro:'wan-níi',zh:'今天',sy:'wan · níi'}];
-let words;let data;
-try{const old=JSON.parse(localStorage.getItem('thaiLab11'))||{};const saved=JSON.parse(localStorage.getItem('thaiLab12'));words=(saved&&Array.isArray(saved.words)?saved.words:defaults).filter(w=>w&&typeof w.th==='string'&&typeof w.ro==='string'&&typeof w.zh==='string');data=saved||{known:Array.isArray(old.known)?old.known:[],answers:{}};}catch{words=defaults.slice();data={known:[],answers:{}}}
-// Upgrade previously bundled vocabulary without changing user-imported custom spellings.
-const examples={'สวัสดี':['สวัสดีค่ะ','sà-wàt-dii khâ','你好。'],'ขอบคุณ':['ขอบคุณมากค่ะ','khɔ̀ɔp-khun mâak khâ','非常謝謝。'],'สบายดีไหม':['คุณสบายดีไหม','khun sà-baai-dii mǎi','你好嗎？'],'ทำงาน':['ฉันทำงานที่บ้าน','chǎn tham-ngaan thîi bâan','我在家工作。'],'กินข้าว':['ฉันกินข้าวแล้ว','chǎn gin khâao lɛ́ɛo','我已經吃飯了。'],'วันนี้':['วันนี้อากาศดี','wan-níi aa-gàat dii','今天天氣很好。']};
-const legacy={'สวัสดี':['sa-wat-dii','sà-wàt-dii'],'ขอบคุณ':['khop-khun','khɔ̀ɔp-khun'],'สบายดีไหม':['sa-baai-dii mai','sà-baai-dii mǎi'],'กินข้าว':['gin-khaao','gin-khâao'],'วันนี้':['wan-nii','wan-níi']};
-words.forEach(w=>{const pair=legacy[w.th];if(pair&&w.ro===pair[0]){w.ro=pair[1];w.sy=pair[1].replaceAll('-',' · ').replaceAll(' ',' · ');}});
-words.forEach(w=>{if(!w.exTh&&examples[w.th]){[w.exTh,w.exRo,w.exZh]=examples[w.th]}});if(!words.length)words=defaults.slice();if(!Array.isArray(data.known))data.known=[];if(!data.answers)data.answers={};
-let quiz=[],pending=[];
-function makeQuiz(){const pool=words.map((_,i)=>i).sort(()=>Math.random()-.5).slice(0,Math.min(5,words.length));quiz=pool.map(i=>{const wrong=words.filter((w,j)=>j!==i&&w.zh!==words[i].zh).map(w=>w.zh);const opts=[words[i].zh,...wrong.sort(()=>Math.random()-.5).slice(0,3)];return {i,opts:opts.sort(()=>Math.random()-.5)}});qi=0;selected=null;data.answers={};save()}
-const $=id=>document.getElementById(id);let index=0,revealed=false,qi=0,selected=null;
-function save(){try{localStorage.setItem('thaiLab12',JSON.stringify({...data,words}))}catch{}updateCounts();updateReviewBoard()}function updateCounts(){$('total').textContent=words.length;$('knownCount').textContent=data.known.length;$('answeredCount').textContent=Object.keys(data.answers).length}
-function showCard(){const w=words[index];$('position').textContent=`單字 ${index+1} / ${words.length}`;$('thai').textContent=w.th;$('roman').textContent=w.ro;$('syllables').textContent='音節：'+(w.sy||w.ro); $('meaning').textContent=w.zh;$('meaning').classList.toggle('hidden',!revealed);const hasExample=!!(w.exTh&&w.exRo&&w.exZh);$('exampleBox').classList.toggle('hidden',!revealed||!hasExample);$('exampleThai').textContent=w.exTh||'';$('exampleRoman').textContent=w.exRo||'';$('exampleZh').textContent=w.exZh||'';$('flip').textContent=revealed?'隱藏中文解釋':'翻開中文解釋';$('mark').textContent=data.known.includes(index)?'✓ 已熟悉（點擊取消）':'標記為已熟悉';$('notice').textContent=''}
-function changeTab(name){updateReviewBoard();['learn','quiz','progress','import'].forEach(t=>{$(t).classList.toggle('hidden',t!==name);$('tab'+t[0].toUpperCase()+t.slice(1)).classList.toggle('active',t===name)});if(name==='progress')showProgress();if(name==='quiz')showQuiz()}
-$('tabLearn').onclick=()=>changeTab('learn');$('tabQuiz').onclick=()=>changeTab('quiz');$('tabProgress').onclick=()=>changeTab('progress');$('tabImport').onclick=()=>changeTab('import');$('flip').onclick=()=>{revealed=!revealed;showCard()};$('prev').onclick=()=>{index=(index+words.length-1)%words.length;revealed=false;showCard()};$('next').onclick=()=>{index=(index+1)%words.length;revealed=false;showCard()};$('mark').onclick=()=>{data.known=data.known.includes(index)?data.known.filter(x=>x!==index):[...data.known,index];save();showCard()};
-function speakThai(text){if(!('speechSynthesis'in window)){$('notice').textContent='這個瀏覽器不支援語音播放。';return}const voices=speechSynthesis.getVoices();const thaiVoice=voices.find(v=>v.lang.toLowerCase().startsWith('th'));if(!thaiVoice){$('notice').textContent='此裝置可能沒有泰語語音，請先檢查 iPad 的語音設定；不會改用其他語言朗讀。';return}speechSynthesis.cancel();const utter=new SpeechSynthesisUtterance(text);utter.lang='th-TH';utter.voice=thaiVoice;utter.rate=.82;utter.onerror=()=>{$('notice').textContent='播放失敗，請確認音量與語音設定。'};speechSynthesis.speak(utter);$('notice').textContent='正在播放泰語發音…'}
-$('speak').onclick=()=>speakThai(words[index].th);
-$('speakExample').onclick=()=>{if(words[index].exTh)speakThai(words[index].exTh)};
-function showQuiz(){const box=$('quizContent');box.replaceChildren();if(qi>=quiz.length){const score=quiz.filter((q,i)=>data.answers[i]===words[q.i].zh).length;box.innerHTML=`<h2>測驗完成</h2><p>得分：${score} / ${quiz.length}</p>`;const b=document.createElement('button');b.textContent='重新測驗';b.className='purplebutton wide';b.onclick=()=>{makeQuiz();showQuiz()};box.append(b);return}const q=quiz[qi],w=words[q.i];const h=document.createElement('h2');h.textContent=`第 ${qi+1} 題 / ${quiz.length}`;box.append(h);const p=document.createElement('p');p.className='center thai';p.textContent=w.th;box.append(p);const r=document.createElement('p');r.className='center roman';r.textContent=w.ro;box.append(r);q.opts.forEach(opt=>{const b=document.createElement('button');b.className='option';b.textContent=opt;if(selected!==null){b.disabled=true;if(opt===w.zh)b.classList.add('correct');else if(opt===selected)b.classList.add('wrong')}b.onclick=()=>{if(selected!==null)return;selected=opt;data.answers[qi]=opt;save();showQuiz()};box.append(b)});if(selected!==null){const result=document.createElement('p');result.textContent=selected===w.zh?'答對了！':'正確答案：'+w.zh;box.append(result);const next=document.createElement('button');next.className='purplebutton wide';next.textContent=qi===quiz.length-1?'查看成績':'下一題';next.onclick=()=>{qi++;selected=null;showQuiz()};box.append(next)}}
-function showProgress(){$('summary').textContent=`已熟悉 ${data.known.length} / ${words.length} 個單字`;$('wordlist').replaceChildren();words.forEach((w,i)=>{const row=document.createElement('div');row.className='wordrow';const span=document.createElement('span');span.textContent=`${w.th} · ${w.ro} · ${w.zh}`;const status=document.createElement('strong');status.textContent=data.known.includes(i)?'✓':'○';row.append(span,status);$('wordlist').append(row)})}$('reset').onclick=()=>{if(confirm('確定要清除熟悉標記與測驗紀錄嗎？')){data={known:[],answers:{}};makeQuiz();save();showProgress();showCard()}};
-// CSV parser supporting quoted fields, commas, tabs and newlines.
-function parseDelimited(input,delimiter){const rows=[];let row=[],cell='',quoted=false;for(let i=0;i<input.length;i++){const c=input[i];if(c==='"'){if(quoted&&input[i+1]==='"'){cell+='"';i++}else quoted=!quoted}else if(c===delimiter&&!quoted){row.push(cell.trim());cell=''}else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&input[i+1]==='\n')i++;row.push(cell.trim());if(row.some(x=>x))rows.push(row);row=[];cell=''}else cell+=c}if(quoted)throw Error('引號未正確結束');row.push(cell.trim());if(row.some(x=>x))rows.push(row);return rows}
-function parseWords(text){const delimiter=(text.split(/\r?\n/)[0]||'').includes('\t')?'\t':',';const rows=parseDelimited(text.replace(/^\uFEFF/,''),delimiter);const results=[],errors=[],seen=new Set(words.map(w=>w.th.trim().toLowerCase()));rows.forEach((r,i)=>{if(i===0&&['泰文','thai','th'].includes((r[0]||'').toLowerCase()))return;if(r.length<3||r.length>8||!r[0]||!r[1]||!r[2]){errors.push(`第 ${i+1} 行：需要泰文、拼音和中文意思`);return}const key=r[0].trim().toLowerCase();if(seen.has(key)){errors.push(`第 ${i+1} 行：重複單字 ${r[0]}`);return}seen.add(key);if(r.length>5&&(!r[5]||!r[6]||!r[7])){errors.push(`第 ${i+1} 行：例句需要泰文、拼音、中文三欄`);return}results.push({th:r[0],ro:r[1],zh:r[2],cat:r[3]||'未分類',sy:r[4]||r[1].replaceAll('-',' · '),exTh:r[5]||'',exRo:r[6]||'',exZh:r[7]||''})});return {results,errors}}
-$('previewImport').onclick=()=>{pending=[];const out=$('importPreview');out.replaceChildren();out.classList.add('hidden');$('confirmImport').classList.add('hidden');try{const {results,errors}=parseWords($('pasteWords').value);pending=results;$('importStatus').textContent=`可新增 ${results.length} 筆；略過／有問題 ${errors.length} 筆。` ;if(results.length||errors.length){out.classList.remove('hidden');results.slice(0,100).forEach(w=>{const d=document.createElement('div');d.className='previewrow';d.textContent=`${w.th}｜${w.ro}｜${w.zh}｜${w.cat}`;out.append(d)});errors.slice(0,20).forEach(e=>{const d=document.createElement('div');d.className='previewrow warning';d.textContent=e;out.append(d)})}if(results.length)$('confirmImport').classList.remove('hidden')}catch(e){$('importStatus').textContent='格式錯誤：'+e.message}};
-$('confirmImport').onclick=()=>{if(!pending.length)return;words.push(...pending);const count=pending.length;pending=[];makeQuiz();save();showCard();$('importStatus').textContent=`成功加入 ${count} 筆單字！`;$('importPreview').classList.add('hidden');$('confirmImport').classList.add('hidden');$('pasteWords').value=''};
-$('fileButton').onclick=()=>$('csvFile').click();$('csvFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;if(file.size>2*1024*1024){$('importStatus').textContent='檔案過大，請使用 2MB 以下的 CSV。';return}$('pasteWords').value=await file.text();$('previewImport').click();e.target.value=''};
-$('exportCsv').onclick=()=>{const esc=v=>'"'+String(v??'').replaceAll('"','""')+'"';const rows=[['泰文','羅馬拼音','中文意思','分類','音節拆解','例句泰文','例句拼音','例句中文'],...words.map(w=>[w.th,w.ro,w.zh,w.cat||'',w.sy||'',w.exTh||'',w.exRo||'',w.exZh||''])];const csv='\uFEFF'+rows.map(r=>r.map(esc).join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='thai-learning-lab-words.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
-makeQuiz();updateCounts();showCard();
-
-// v1.6: spaced review is per word, shared across quiz modes, saved with vocabulary.
-let quizMode='listen',recallShown=false,quizStats={listen:{right:0,total:0},recall:{right:0,total:0},picture:{right:0,total:0}};
-const iconMap={'กินข้าว':'🍚','ทำงาน':'💼','ขอบคุณ':'🙏','สวัสดี':'👋','วันนี้':'📅','สบายดีไหม':'🙂','น้ำ':'💧','แมว':'🐈','หมา':'🐕','บ้าน':'🏠','หนังสือ':'📖','กาแฟ':'☕','นอน':'🛏️','รถ':'🚗','โรงเรียน':'🏫','ปลา':'🐟','ข้าว':'🍚'};
-if(!data.review||typeof data.review!=='object')data.review={};
-const dayMs=86400000;
-function reviewKey(w){return w.th.trim()}
-function due(w){const r=data.review[reviewKey(w)];return !r||!Number.isFinite(r.next)||r.next<=Date.now()}
-function eligiblePicture(){return words.map((w,i)=>({w,i})).filter(x=>iconMap[x.w.th]);}
-function availableIndices(){return words.map((w,i)=>({w,i})).filter(x=>due(x.w)).map(x=>x.i)}
-function makeModeQuiz(){retryCount={};const pool=quizMode==='picture'?eligiblePicture().filter(x=>due(x.w)).map(x=>x.i):availableIndices();const picks=pool.sort(()=>Math.random()-.5).slice(0,Math.min(5,pool.length));quiz=picks.map(i=>{const w=words[i];const wrong=words.filter((x,j)=>j!==i&&x.zh!==w.zh).map(x=>x.zh).sort(()=>Math.random()-.5).slice(0,3);return {i,opts:[w.zh,...wrong].sort(()=>Math.random()-.5)}});qi=0;selected=null;recallShown=false;ratingDone=false;}
-let ratingDone=false;let retryCount={};
-function resetMode(mode){quizMode=mode;makeModeQuiz();['Listen','Recall','Picture'].forEach((k,i)=>document.getElementById('mode'+k).classList.toggle('chosen',['listen','recall','picture'][i]===mode));showQuiz()}
-document.getElementById('modeListen').onclick=()=>resetMode('listen');
-document.getElementById('modeRecall').onclick=()=>resetMode('recall');
-document.getElementById('modePicture').onclick=()=>resetMode('picture');
-function node(tag,content,cls){const n=document.createElement(tag);if(content!==undefined)n.textContent=content;if(cls)n.className=cls;return n}
-function nextQuiz(){qi++;selected=null;recallShown=false;ratingDone=false;showQuiz()}
-function formatDate(ts){return new Intl.DateTimeFormat('zh-TW',{year:'numeric',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(ts))}
-function rateWord(w,days,label){const now=Date.now(),key=reviewKey(w),old=data.review[key];const correct=quizMode==='recall'?selected==='答對':quizMode==='picture'?selected===w.th:selected===w.zh;const effectiveDays=correct?days:1;const effectiveLabel=correct?label:'不熟';const attempts=(old?.attempts||0)+1;const wasCorrectBefore=old?.everCorrect===true;data.review[key]={level:effectiveLabel,days:effectiveDays,last:now,next:now+effectiveDays*dayMs,attempts,everCorrect:wasCorrectBefore||correct,correctCount:(old?.correctCount||0)+(correct?1:0),lastCorrect:correct};if(!data.activity||typeof data.activity!=='object')data.activity={};const day=new Date().toLocaleDateString('sv-SE');const daily=data.activity[day]||{attempted:[],correct:[]};if(!Array.isArray(daily.attempted))daily.attempted=[];if(!Array.isArray(daily.correct))daily.correct=[];if(!daily.attempted.includes(key))daily.attempted.push(key);if(correct&&!daily.correct.includes(key))daily.correct.push(key);data.activity[day]=daily;if(!correct&&(retryCount[key]||0)<1){retryCount[key]=(retryCount[key]||0)+1;quiz.splice(qi+2,0,{i:words.indexOf(w),opts:[w.zh,...words.filter(x=>x.th!==w.th&&x.zh!==w.zh).map(x=>x.zh).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5),retry:true});}ratingDone=true;save();showQuiz()}
-showQuiz=function(){
- const box=$('quizContent');box.replaceChildren();
- if(qi>=quiz.length){const st=quizStats[quizMode];box.append(node('h2',quiz.length?'本輪完成':'目前沒有到期的單字'),node('p',quiz.length?`本模式累計：${st.right} / ${st.total} 題`:'已安排複習的單字會在到期後重新出現。新單字可以立即練習。'));const upcoming=Object.values(data.review).filter(r=>r&&r.next>Date.now()).map(r=>r.next).sort((a,b)=>a-b)[0];if(upcoming)box.append(node('p','下一個複習時間：'+formatDate(upcoming),'duedate'));const b=node('button','重新檢查到期單字','purplebutton wide');b.onclick=()=>resetMode(quizMode);box.append(b);return}
- const q=quiz[qi],w=words[q.i];box.append(node('h2',`第 ${qi+1} / ${quiz.length} 題`));
- const prompt=node('div',undefined,'quizprompt');box.append(prompt);
- function finish(ok,chosen){if(selected!==null)return;selected=chosen;quizStats[quizMode].total++;if(ok)quizStats[quizMode].right++;data.answers[`${quizMode}-${Date.now()}-${qi}`]=ok?'正確':'錯誤';save();showQuiz()}
- if(quizMode==='listen'){
-  prompt.append(node('h3','聽泰語，選出中文意思'));
-  const play=node('button','🔊 播放泰語','primary');play.onclick=()=>speakThai(w.th);prompt.append(play);
-  prompt.append(node('p','請先聽聲音再選答案，答題前不顯示泰文。','subtle'));
-  q.opts.forEach(opt=>{const b=node('button',opt,'option');b.onclick=()=>finish(opt===w.zh,opt);if(selected!==null){b.disabled=true;if(opt===w.zh)b.classList.add('correct');else if(opt===selected)b.classList.add('wrong')}box.append(b)});
- }else if(quizMode==='recall'){
-  prompt.append(node('h3',w.zh),node('p','先試著說出泰語與附聲調拼音。','subtle'));
-  if(recallShown){prompt.append(node('h2',w.th),node('p',w.ro,'roman'));const play=node('button','🔊 聽正確發音','primary');play.onclick=()=>speakThai(w.th);prompt.append(play)}else{const flip=node('button','翻牌看答案','purplebutton');flip.onclick=()=>{recallShown=true;showQuiz()};prompt.append(flip)}
-  if(recallShown&&selected===null){const a=node('button','需要複習','option');a.onclick=()=>finish(false,'複習');const b=node('button','我答對了','option');b.onclick=()=>finish(true,'答對');box.append(a,b)}
- }else{
-  prompt.append(node('div',iconMap[w.th],'emoji'),node('h3','選出符合圖示的泰文與拼音'));
-  const others=eligiblePicture().filter(x=>x.i!==q.i).sort(()=>Math.random()-.5).slice(0,3).map(x=>x.w.th);
-  if(!q.pictureOpts)q.pictureOpts=[w.th,...others].sort(()=>Math.random()-.5);
-  q.pictureOpts.forEach(opt=>{const match=words.find(x=>x.th===opt);const b=node('button',undefined,'option');b.append(node('span',opt),node('span',match?.ro||'','optroman'));b.onclick=()=>finish(opt===w.th,opt);if(selected!==null){b.disabled=true;if(opt===w.th)b.classList.add('correct');else if(opt===selected)b.classList.add('wrong')}box.append(b)});
- }
- if(selected!==null){const correct=quizMode==='recall'?selected==='答對':quizMode==='picture'?selected===w.th:selected===w.zh;box.append(node('p',correct?'答對了！':`正確答案：${w.th} · ${w.ro}（${w.zh}）`,'quizfeedback'));
-  if(!ratingDone){box.append(node('p',correct?'依照自己的熟悉程度，安排下次複習：':'這題尚未掌握，系統將安排當輪稍後重練及隔天複習。','hint'));const rating=node('div',undefined,'ratinggrid');[['不熟',1,'#fbe6e5'],['還好',3,'#fff0d8'],['熟悉',5,'#e0f3e8']].forEach(([label,days,bg])=>{const b=node('button',undefined);b.style.background=bg;b.append(node('strong',label),node('small',`${days} 天後`));b.onclick=()=>rateWord(w,correct?days:1,correct?label:'不熟');if(!correct&&days!==1){b.disabled=true;b.title='答錯時固定安排隔天複習'}rating.append(b)});box.append(rating)}else{const r=data.review[reviewKey(w)];box.append(node('p',`已標記「${r.level}」，下次複習：${formatDate(r.next)}`,'duedate'));if(!correct&&q.retry!==true)box.append(node('p','本輪稍後會再練習這個單字。','reviewnotice'));const next=node('button',qi===quiz.length-1?'查看成績':'下一題','purplebutton wide');next.onclick=nextQuiz;box.append(next)}
- }
-};
-// Initialize a due-only session on first visit to the quiz tab.
-const originalQuizTab=document.getElementById('tabQuiz').onclick;
-document.getElementById('tabQuiz').onclick=()=>{if(!document.getElementById('quiz').classList.contains('hidden'))return;makeModeQuiz();originalQuizTab()};
-const originalProgress=showProgress;
-showProgress=function(){originalProgress();const dueCount=words.filter(due).length;$('progressDue')?.remove();const p=node('p',`目前可複習：${dueCount} 個單字；已安排下次複習：${words.length-dueCount} 個。`,'hint');p.id='progressDue';$('summary').after(p);$('wordlist').querySelectorAll('.wordrow').forEach((row,i)=>{const r=data.review[reviewKey(words[i])];if(r){const t=node('small',` · ${r.level}（${formatDate(r.next)}）`);row.firstChild.append(t)}})};
-const oldReset=$('reset').onclick;
-$('reset').onclick=()=>{if(confirm('確定要清除熟悉標記、測驗紀錄及複習排程嗎？')){data.known=[];data.answers={};data.review={};data.activity={};save();makeModeQuiz();showProgress();showCard()}};
-
-// v1.7 review dashboard. Calendar-day grouping follows the iPad's local timezone.
-function localDayStart(t){const d=new Date(t);return new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime()}
-function updateReviewBoard(){
- const target=$('reviewDays');if(!target||!Array.isArray(words))return;
- const today=localDayStart(Date.now()),tomorrow=localDayStart(new Date(today).setDate(new Date(today).getDate()+1));
- let todayCount=0,newCount=0,overdue=0;const counts=Array(7).fill(0);
- words.forEach(w=>{
-  const r=data.review&&data.review[reviewKey(w)];
-  if(!r||!Number.isFinite(r.next)){todayCount++;newCount++;return}
-  if(r.next<=Date.now()){todayCount++;overdue++;return}
-  const d=localDayStart(r.next);
-  if(d===today){todayCount++;return} // due later today
-  const dayIndex=Math.round((Date.UTC(new Date(d).getFullYear(),new Date(d).getMonth(),new Date(d).getDate())-Date.UTC(new Date(tomorrow).getFullYear(),new Date(tomorrow).getMonth(),new Date(tomorrow).getDate()))/86400000);
-  if(dayIndex>=0&&dayIndex<7)counts[dayIndex]++;
- });
- $('todayDue').textContent=todayCount;updateMotivation();
- $('dueBreakdown').textContent=`尚未練習 ${newCount} 個 · 已到期 ${overdue} 個`;
- target.replaceChildren();
- counts.forEach((n,i)=>{const d=new Date(today);d.setDate(d.getDate()+i+1);const cell=node('div',undefined,'reviewday');cell.append(node('small',i===0?'明天':`${d.getMonth()+1}/${d.getDate()}`),node('strong',String(n)));target.append(cell)});
- $('startToday').textContent=todayCount?'開始今日複習':'查看測驗中心（今日已完成）';
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>泰語歌詞同步播放器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;700&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3ede2; --ink:#2a2420; --muted:#7a6f63; --paper:#fffdf8; --line:#e2d8c6;
+  --accent:#b5452b; --accent-soft:#f6e3d9; --gold:#c89b3c;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
-$('startToday').onclick=()=>{resetMode('listen');changeTab('quiz')};
-function updateMotivation(){const goal=Number(data.dailyGoal)||10;const selector=$('dailyGoal');if(!selector)return;selector.value=String(goal);const day=new Date().toLocaleDateString('sv-SE');const act=data.activity?.[day]||{};const attempted=Array.isArray(act.attempted)?act.attempted.filter(k=>words.some(w=>reviewKey(w)===k)).length:0;const correct=Array.isArray(act.correct)?act.correct.length:0;$('goalProgress').max=goal;$('goalProgress').value=Math.min(attempted,goal);$('goalStatus').textContent=`今天已練習 ${attempted} / ${goal} 個不同單字`;$('learningFeedback').textContent=attempted>=goal?`已達成自訂目標！今天有 ${correct} 個單字曾正確回答。`:(attempted?`已開始練習；今天有 ${correct} 個單字曾正確回答。`:'選擇適合自己的目標，先從一個單字開始。');const mastered=words.filter(w=>{const r=data.review[reviewKey(w)];return r&&r.lastCorrect&&r.level==='熟悉'&&r.correctCount>=2}).length;const recovered=words.filter(w=>{const r=data.review[reviewKey(w)];return r&&r.everCorrect&&r.attempts>=2&&r.lastCorrect}).length;$('growthStatus').textContent=`穩定掌握 ${mastered} 個單字 · 多次練習後答對 ${recovered} 個`;}
-$('dailyGoal').onchange=e=>{data.dailyGoal=Number(e.target.value);save()};
-const contexts=[{name:'日常問候',words:['สวัสดี','สบายดีไหม'],task:'試著用泰語向朋友打招呼，並問對方好不好。'},{name:'在家的一天',words:['ทำงาน','วันนี้'],task:'試著說出「今天」和「工作」，再練習一句和自己生活有關的短句。'},{name:'一起吃飯',words:['กินข้าว','ขอบคุณ'],task:'想像和朋友吃飯，練習「吃飯」與「謝謝」，並朗讀單字卡的例句。'}];let contextIndex=0;function renderContext(){const c=contexts[contextIndex%contexts.length];$('contextTask').textContent=`${c.name}：${c.task}`;}$('newContext').onclick=()=>{contextIndex++;renderContext()};renderContext();
-updateReviewBoard();
-</script></body></html>
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#1d1916; --ink:#f1e9dc; --muted:#a99b8a; --paper:#fffdf8; --line:#3a322b;
+    --accent:#e0714f; --accent-soft:#3b2a22; color-scheme:dark; }
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","Noto Sans Thai",system-ui,sans-serif;}
+.app{display:grid;grid-template-columns:minmax(320px,440px) 1fr;height:100%;}
+@media (max-width:860px){ .app{grid-template-columns:1fr;grid-template-rows:auto 1fr;} }
+
+/* left: player + controls */
+.side{padding:20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;border-right:1px solid var(--line)}
+@media (max-width:860px){ .side{border-right:0;border-bottom:1px solid var(--line);padding:12px;gap:10px;max-height:52vh} }
+h1{font-size:1.25rem;font-weight:900;margin:0;letter-spacing:.02em}
+h1 small{display:block;font-size:.78rem;font-weight:400;color:var(--muted);margin-top:2px}
+.video{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden}
+.video > *{position:absolute;inset:0;width:100%;height:100%}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,select,.filebtn{font:inherit;font-size:.88rem;border:1px solid var(--line);background:var(--paper);color:#2a2420;
+  border-radius:999px;padding:7px 14px;cursor:pointer}
+button:hover,.filebtn:hover{border-color:var(--accent)}
+button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+button.rec{background:#c62828;color:#fff;border-color:#c62828}
+input[type=text]{font:inherit;font-size:.88rem;flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:7px 10px;background:var(--paper);color:#2a2420}
+.card{background:color-mix(in srgb,var(--paper) 6%,transparent);border:1px solid var(--line);border-radius:12px;padding:12px}
+.card h2{font-size:.82rem;margin:0 0 8px;color:var(--muted);font-weight:700;letter-spacing:.06em}
+.hint{font-size:.8rem;color:var(--muted);line-height:1.6;margin:6px 0 0}
+kbd{font-family:inherit;font-size:.75rem;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--paper);color:#2a2420}
+.status{font-size:.82rem;color:var(--accent);min-height:1.2em}
+
+/* right: lyrics stage */
+.stage{overflow-y:auto;scroll-behavior:smooth;padding:30vh 24px 45vh;position:relative}
+.empty{max-width:520px;margin:0 auto;text-align:center;color:var(--muted);border:2px dashed var(--line);border-radius:16px;padding:40px 24px}
+.empty b{color:var(--ink)}
+.drag .empty{border-color:var(--accent);background:var(--accent-soft)}
+.sec{max-width:760px;margin:28px auto 6px;font-size:.78rem;color:var(--muted);letter-spacing:.08em;font-weight:700}
+.ln{max-width:760px;margin:8px auto;padding:12px 16px;border-radius:14px;background:var(--paper);color:#202020;
+  opacity:.38;transform:scale(.97);transform-origin:left center;transition:opacity .25s,transform .25s,box-shadow .25s;cursor:pointer;
+  border-left:4px solid transparent;line-height:1.6;position:relative}
+.ln:hover{opacity:.7}
+.ln.active{opacity:1;transform:scale(1);box-shadow:0 8px 28px rgba(80,40,10,.18);border-left-color:var(--accent)}
+.ln.past{opacity:.55}
+.ln.untimed::after{content:"未對時";position:absolute;right:10px;top:8px;font-size:.68rem;color:#b07a1f;background:#fbf0d9;border-radius:6px;padding:1px 6px}
+.ln .thai{font-family:"Noto Sans Thai",sans-serif;font-size:1.35rem;font-weight:700}
+.ln .roman{font-size:1.02rem;font-weight:600}
+.ln .chinese{font-size:1rem;font-weight:600}
+.ln .plain{font-size:1.1rem;font-weight:700}
+.ln .chunk{display:inline-block;margin-right:.3em;border-bottom:2px solid currentColor;line-height:1.5}
+.hide-thai .thai,.hide-roman .roman,.hide-chinese .chinese{display:none}
+.tm{display:none;margin-top:6px;font-size:.78rem;color:#7a6f63;gap:6px;align-items:center}
+.editing .tm{display:flex}
+.tm button{padding:2px 9px;font-size:.75rem}
+.tm code{font-family:ui-monospace,monospace;color:#2a2420;min-width:4.5em}
+.recording .ln.next{outline:2px dashed #c62828;outline-offset:3px;opacity:.9}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <h1>泰語歌詞同步播放器<small>載入你的彩色歌詞檔 → 對一次時間 → 之後播放就會跟著跑</small></h1>
+
+    <div class="video"><div id="player"></div></div>
+
+    <div class="row">
+      <input type="text" id="vid" value="https://www.youtube.com/watch?v=Zpu7kzkEvGE" aria-label="YouTube 連結">
+      <button id="loadVid">換影片</button>
+    </div>
+
+    <div class="card">
+      <h2>歌詞</h2>
+      <div class="row">
+        <label class="filebtn">📄 載入歌詞 HTML<input type="file" id="file" accept=".html,.htm" hidden></label>
+        <button id="tg-thai" class="on">泰文</button>
+        <button id="tg-roman" class="on">拼音</button>
+        <button id="tg-chinese" class="on">中文</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>練習</h2>
+      <div class="row">
+        <select id="rate" aria-label="播放速度">
+          <option value="0.5">0.5×</option><option value="0.75">0.75×</option>
+          <option value="1" selected>1× 速度</option>
+        </select>
+        <button id="loop">🔁 單句循環</button>
+        <button id="follow" class="on">自動捲動</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>對時間</h2>
+      <div class="row">
+        <button id="recBtn">⏺ 開始錄製</button>
+        <button id="editBtn">✏️ 微調</button>
+      </div>
+      <p class="hint">按「開始錄製」後歌曲從頭播放，每一句<b>開始唱的瞬間</b>按 <kbd>空白鍵</kbd>（或 <kbd>↓</kbd>）。按錯可按 <kbd>↑</kbd> 退回一句。時間會自動存在這台瀏覽器裡。</p>
+      <div class="row" style="margin-top:8px">
+        <span style="font-size:.82rem;color:var(--muted)">整體提前/延後</span>
+        <button data-off="-0.2">−0.2s</button><button data-off="0.2">+0.2s</button>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button id="exp">⬇ 匯出時間檔</button>
+        <label class="filebtn">⬆ 匯入時間檔<input type="file" id="imp" accept=".json" hidden></label>
+        <button id="clr">清除時間</button>
+      </div>
+    </div>
+    <div class="status" id="status"></div>
+  </aside>
+
+  <main class="stage" id="stage">
+    <div class="empty" id="empty">
+      <p style="font-size:2rem;margin:0">🎵</p>
+      <p><b>把你的歌詞 HTML 檔拖到這裡</b><br>或按左邊「載入歌詞 HTML」</p>
+      <p class="hint">支援 .pair（泰文＋拼音＋中文）與 .plain 單行格式，顏色組塊會保留。</p>
+    </div>
+    <div id="lyrics"></div>
+  </main>
+</div>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const store = {
+    get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+    set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  };
+  let player = null, ready = false;
+  let videoId = store.get('tlp:video') || 'Zpu7kzkEvGE';
+  let lines = [];          // [{html, sec}]
+  let times = [];          // seconds or null
+  let active = -1, recording = false, recIdx = 0, looping = false;
+  const stage = $('#stage'), lyricsEl = $('#lyrics');
+  const status = msg => { $('#status').textContent = msg; clearTimeout(status.t); status.t = setTimeout(()=>$('#status').textContent='',3500); };
+  const tKey = () => 'tlp:times:' + videoId;
+
+  /* ---------- YouTube ---------- */
+  const parseId = s => { const m = s.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/); return m ? m[1] : (/^[\w-]{11}$/.test(s.trim()) ? s.trim() : null); };
+  $('#vid').value = 'https://www.youtube.com/watch?v=' + videoId;
+  const tag = document.createElement('script'); tag.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(tag);
+  window.onYouTubeIframeAPIReady = () => {
+    player = new YT.Player('player', {
+      videoId, playerVars:{ rel:0, playsinline:1, origin: location.origin !== 'null' ? location.origin : undefined },
+      events:{
+        onReady(){ ready = true; },
+        onError(e){ status('影片載入失敗（代碼 ' + e.data + '）。若用電腦直接開檔案，請看說明改用網址開啟。'); }
+      }
+    });
+  };
+  $('#loadVid').onclick = () => {
+    const id = parseId($('#vid').value);
+    if(!id){ status('看不懂這個連結'); return; }
+    videoId = id; store.set('tlp:video', id);
+    if(ready) player.loadVideoById(id);
+    times = store.get(tKey()) || new Array(lines.length).fill(null); fixTimes(); render();
+  };
+  const now = () => (ready && player.getCurrentTime) ? player.getCurrentTime() : 0;
+  $('#rate').onchange = e => ready && player.setPlaybackRate(+e.target.value);
+
+  /* ---------- lyrics loading ---------- */
+  function clean(node){
+    node.querySelectorAll('script,style,iframe,object,link').forEach(n=>n.remove());
+    node.querySelectorAll('*').forEach(el => [...el.attributes].forEach(a => {
+      if(/^on/i.test(a.name) || (a.name!=='class' && a.name!=='style')) el.removeAttribute(a.name);
+    }));
+    return node.innerHTML;
+  }
+  function parseLyrics(html){
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const out = []; let sec = '';
+    doc.querySelectorAll('h3, h4, .pair, .plain').forEach(el => {
+      if(/^H[34]$/.test(el.tagName)){ sec = el.textContent.trim(); return; }
+      if(el.classList.contains('plain') && el.closest('.pair')) return;
+      const wrap = el.classList.contains('plain') ? (()=>{ const d = document.createElement('div'); d.className='plain'; d.innerHTML = clean(el.cloneNode(true)); return d.outerHTML; })() : clean(el.cloneNode(true));
+      out.push({ html: wrap, sec }); sec = '';
+    });
+    if(!out.length){ // fallback: any non-empty paragraph/line
+      doc.body.innerText.split('\n').map(s=>s.trim()).filter(Boolean)
+        .forEach(t => { const d=document.createElement('div'); d.className='plain'; d.textContent=t; out.push({html:d.outerHTML, sec:''}); });
+    }
+    return out;
+  }
+  function loadLyricsText(html, name){
+    lines = parseLyrics(html);
+    store.set('tlp:lyrics', lines);
+    times = store.get(tKey()) || new Array(lines.length).fill(null); fixTimes();
+    render(); status('已載入 ' + lines.length + ' 句' + (name ? '（' + name + '）' : ''));
+  }
+  function fixTimes(){ if(times.length !== lines.length){ times = lines.map((_,i)=> times[i] ?? null); } }
+  const readFile = f => f && f.text().then(t => loadLyricsText(t, f.name));
+  $('#file').onchange = e => readFile(e.target.files[0]);
+  ['dragenter','dragover'].forEach(ev => stage.addEventListener(ev, e => { e.preventDefault(); stage.classList.add('drag'); }));
+  ['dragleave','drop'].forEach(ev => stage.addEventListener(ev, e => { e.preventDefault(); stage.classList.remove('drag'); }));
+  stage.addEventListener('drop', e => readFile(e.dataTransfer.files[0]));
+
+  /* ---------- render ---------- */
+  const fmt = t => t==null ? '--:--.-' : Math.floor(t/60) + ':' + (t%60).toFixed(1).padStart(4,'0');
+  function render(){
+    $('#empty').style.display = lines.length ? 'none' : '';
+    lyricsEl.innerHTML = '';
+    lines.forEach((l,i) => {
+      if(l.sec){ const s = document.createElement('div'); s.className='sec'; s.textContent = l.sec; lyricsEl.appendChild(s); }
+      const d = document.createElement('div');
+      d.className = 'ln' + (times[i]==null ? ' untimed' : ''); d.dataset.i = i;
+      d.innerHTML = l.html + `<div class="tm"><code>${fmt(times[i])}</code>
+        <button data-n="-0.1">−0.1</button><button data-n="0.1">+0.1</button>
+        <button data-set="1">設為現在</button></div>`;
+      lyricsEl.appendChild(d);
+    });
+    active = -1; markNext();
+  }
+  lyricsEl.addEventListener('click', e => {
+    const ln = e.target.closest('.ln'); if(!ln) return; const i = +ln.dataset.i;
+    const b = e.target.closest('button');
+    if(b){
+      e.stopPropagation();
+      if(b.dataset.set) times[i] = +now().toFixed(2);
+      else if(times[i]!=null) times[i] = Math.max(0, +(times[i] + +b.dataset.n).toFixed(2));
+      save(); ln.querySelector('code').textContent = fmt(times[i]); ln.classList.toggle('untimed', times[i]==null);
+      if(times[i]!=null && ready) player.seekTo(times[i], true);
+      return;
+    }
+    if(recording){ recIdx = i; markNext(); return; }
+    if(times[i]!=null && ready){ player.seekTo(times[i], true); player.playVideo(); }
+    else status('這句還沒對時間');
+  });
+  const save = () => store.set(tKey(), times);
+
+  /* ---------- sync loop ---------- */
+  function lineAt(t){
+    let idx = -1;
+    for(let i=0;i<times.length;i++){ if(times[i]!=null && times[i] <= t + 0.05) idx = i; }
+    return idx;
+  }
+  function nextTimed(i){ for(let j=i+1;j<times.length;j++) if(times[j]!=null) return times[j]; return null; }
+  function setActive(i){
+    if(i === active) return;
+    const els = lyricsEl.querySelectorAll('.ln');
+    els.forEach((el,k) => { el.classList.toggle('active', k===i); el.classList.toggle('past', i>=0 && k<i); });
+    active = i;
+    if(i>=0 && $('#follow').classList.contains('on')) els[i].scrollIntoView({block:'center', behavior:'smooth'});
+  }
+  setInterval(() => {
+    if(!ready || !lines.length) return;
+    const t = now();
+    if(looping && active>=0 && times[active]!=null){
+      const end = nextTimed(active);
+      if(end!=null && t >= end - 0.05){ player.seekTo(times[active], true); return; }
+    }
+    if(!looping || active<0) setActive(lineAt(t));
+  }, 80);
+
+  /* ---------- recording ---------- */
+  function markNext(){
+    lyricsEl.querySelectorAll('.ln').forEach((el,k)=>el.classList.toggle('next', recording && k===recIdx));
+    const n = lyricsEl.querySelector('.ln.next'); if(n) n.scrollIntoView({block:'center',behavior:'smooth'});
+  }
+  $('#recBtn').onclick = () => {
+    if(!lines.length){ status('請先載入歌詞'); return; }
+    recording = !recording;
+    document.body.classList.toggle('recording', recording);
+    $('#recBtn').classList.toggle('rec', recording);
+    $('#recBtn').textContent = recording ? '⏹ 停止錄製' : '⏺ 開始錄製';
+    if(recording){
+      looping = false; $('#loop').classList.remove('on');
+      recIdx = times.findIndex(t => t==null); if(recIdx<0) recIdx = 0;
+      if(recIdx === 0 && ready){ player.seekTo(0,true); }
+      if(ready) player.playVideo();
+      status('每句開頭按空白鍵；點任一句可從那句開始錄');
+    } else status('已儲存時間');
+    markNext();
+  };
+  document.addEventListener('keydown', e => {
+    if(e.target.matches('input,select')) return;
+    if(recording && (e.code==='Space' || e.code==='ArrowDown')){
+      e.preventDefault();
+      if(recIdx < lines.length){ times[recIdx] = +now().toFixed(2); save();
+        const el = lyricsEl.querySelectorAll('.ln')[recIdx];
+        el.classList.remove('untimed'); el.querySelector('code').textContent = fmt(times[recIdx]);
+        recIdx++; markNext();
+        if(recIdx >= lines.length){ $('#recBtn').click(); status('全部對完了！🎉'); }
+      }
+    } else if(recording && e.code==='ArrowUp'){
+      e.preventDefault(); recIdx = Math.max(0, recIdx-1); markNext();
+      if(times[recIdx]!=null && ready) player.seekTo(Math.max(0,times[recIdx]-1.5), true);
+    } else if(!recording && e.code==='Space' && ready){
+      e.preventDefault(); player.getPlayerState()===1 ? player.pauseVideo() : player.playVideo();
+    }
+  });
+
+  /* ---------- buttons ---------- */
+  $('#editBtn').onclick = () => { document.body.classList.toggle('editing'); $('#editBtn').classList.toggle('on'); };
+  $('#loop').onclick = () => {
+    looping = !looping; $('#loop').classList.toggle('on', looping);
+    status(looping ? '會一直重複目前這句（點別句可換句）' : '已關閉單句循環');
+  };
+  $('#follow').onclick = e => e.currentTarget.classList.toggle('on');
+  ['thai','roman','chinese'].forEach(k => $('#tg-'+k).onclick = e => {
+    e.currentTarget.classList.toggle('on'); document.body.classList.toggle('hide-'+k);
+  });
+  document.querySelectorAll('[data-off]').forEach(b => b.onclick = () => {
+    const d = +b.dataset.off; times = times.map(t => t==null ? null : Math.max(0, +(t+d).toFixed(2))); save(); render();
+    status('全部時間 ' + (d>0?'延後 ':'提前 ') + Math.abs(d) + ' 秒');
+  });
+  $('#exp').onclick = () => {
+    const blob = new Blob([JSON.stringify({videoId, times}, null, 1)], {type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'lyrics_timing_' + videoId + '.json'; a.click();
+  };
+  $('#imp').onchange = e => e.target.files[0] && e.target.files[0].text().then(t => {
+    try{ const o = JSON.parse(t); times = o.times || o; fixTimes(); save(); render(); status('已匯入時間'); }
+    catch(err){ status('時間檔格式不對'); }
+  });
+  $('#clr').onclick = () => { if(confirm('確定清除這首歌所有時間？')){ times = lines.map(()=>null); save(); render(); } };
+
+  /* ---------- restore ---------- */
+  const saved = store.get('tlp:lyrics');
+  if(saved && saved.length){ lines = saved; times = store.get(tKey()) || lines.map(()=>null); fixTimes(); render(); }
+})();
+</script>
+</body>
+</html>
