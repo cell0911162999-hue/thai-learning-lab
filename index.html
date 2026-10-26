@@ -27,6 +27,7 @@ body{background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","Noto Sans
 .tab{border:0;border-bottom:3px solid transparent;border-radius:0;background:none;color:var(--muted);font-weight:700;font-size:.95rem;padding:8px 14px}
 .tab.on{background:none;color:var(--ink);border-bottom-color:var(--accent)}
 .tab .cnt{display:inline-block;min-width:1.4em;font-size:.72rem;background:var(--accent);color:#fff;border-radius:999px;padding:0 6px;margin-left:4px}
+.app.off{position:absolute;left:-10000px;top:0;width:900px;height:600px;visibility:hidden;pointer-events:none}
 .lib{flex:1;min-height:0;overflow-y:auto;padding:24px 20px 60px}
 .lib-inner{max-width:900px;margin:0 auto}
 .lib h2{font-size:1.3rem;margin:0 0 4px}
@@ -116,7 +117,8 @@ kbd{font-family:inherit;font-size:.75rem;border:1px solid var(--line);border-bot
 
     <div class="row">
       <input type="text" id="vid" value="https://www.youtube.com/watch?v=Zpu7kzkEvGE" aria-label="YouTube 連結">
-      <button id="loadVid">換影片</button>
+      <button id="loadVid">換新影片</button>
+      <button id="playBtn" class="on">▶ 播放影片</button>
     </div>
 
     <div class="card">
@@ -200,14 +202,40 @@ kbd{font-family:inherit;font-size:.75rem;border:1px solid var(--line);border-bot
   const parseId = s => { const m = s.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/); return m ? m[1] : (/^[\w-]{11}$/.test(s.trim()) ? s.trim() : null); };
   $('#vid').value = 'https://www.youtube.com/watch?v=' + videoId;
   const tag = document.createElement('script'); tag.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(tag);
-  window.onYouTubeIframeAPIReady = () => {
+  let playOnReady = false;
+  function createPlayer(){
+    ready = false;
+    try{ if(player && player.destroy) player.destroy(); }catch(e){}
+    document.querySelector('.video').innerHTML = '<div id="player"></div>';
     player = new YT.Player('player', {
       videoId, playerVars:{ rel:0, playsinline:1, origin: location.origin !== 'null' ? location.origin : undefined },
       events:{
-        onReady(){ ready = true; },
+        onReady(){
+          ready = true;
+          player.setPlaybackRate(+$('#rate').value);
+          if(playOnReady){ playOnReady = false; startPlay(); }
+        },
+        onStateChange(e){ $('#playBtn').textContent = e.data === 1 ? '⏸ 暫停' : '▶ 播放影片'; },
         onError(e){ status('影片載入失敗（代碼 ' + e.data + '）。若用電腦直接開檔案，請看說明改用網址開啟。'); }
       }
     });
+  }
+  window.onYouTubeIframeAPIReady = createPlayer;
+  const alive = () => { try{ return ready && player && typeof player.getPlayerState === 'function' && player.getPlayerState() !== undefined; }catch(e){ return false; } };
+  const loadedId = () => { try{ return player.getVideoData().video_id; }catch(e){ return null; } };
+  function startPlay(){
+    if(loadedId() !== videoId){
+      player.loadVideoById({ videoId, startSeconds: 0 });   // loads + plays
+    } else {
+      player.playVideo();
+    }
+    setActive(-1);
+  }
+  $('#playBtn').onclick = () => {
+    if(!window.YT || !YT.Player){ status('YouTube 還在載入，請稍等一下再按'); return; }
+    if(alive() && player.getPlayerState() === 1){ player.pauseVideo(); return; }
+    if(alive()){ startPlay(); }
+    else { playOnReady = true; status('重新連接影片中…'); createPlayer(); }   // player broken → rebuild it
   };
   $('#loadVid').onclick = () => {
     const id = parseId($('#vid').value);
@@ -323,7 +351,8 @@ kbd{font-family:inherit;font-size:.75rem;border:1px solid var(--line);border-bot
     times = (s.times || []).slice(); fixTimes(); store.set(tKey(), times);
     $('#vid').value = 'https://www.youtube.com/watch?v=' + videoId;
     $('#title').value = s.title;
-    if(ready) player.cueVideoById(videoId);
+    if(alive()){ try{ player.cueVideoById(videoId); }catch(e){} }
+    else if(window.YT && YT.Player) createPlayer();
     s.opened = Date.now(); library = [s, ...library.filter(x => x !== s)]; saveLib();
     render(); songState(); showTab('practice'); status('開始練習：' + s.title);
   }
@@ -348,7 +377,7 @@ kbd{font-family:inherit;font-size:.75rem;border:1px solid var(--line);border-bot
   }
   function showTab(t){
     document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab===t));
-    $('#practiceView').hidden = t !== 'practice'; $('#practiceView').style.display = t==='practice' ? '' : 'none';
+    $('#practiceView').classList.toggle('off', t !== 'practice');
     $('#libView').hidden = t !== 'library';
     if(t === 'library') renderLib();
   }
