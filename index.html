@@ -15,7 +15,7 @@
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme: dark){
-  :root{ --bg:#1d1916; --ink:#f1e9dc; --muted:#a99b8a; --paper:#fffdf8; --line:#3a322b;
+  :root:not([data-theme="light"]){ --bg:#1d1916; --ink:#f1e9dc; --muted:#a99b8a; --paper:#fffdf8; --line:#3a322b;
     --accent:#e0714f; --accent-soft:#3b2a22; color-scheme:dark; }
 }
 *,*::before,*::after{box-sizing:inherit}
@@ -119,6 +119,7 @@ kbd{font-family:inherit;font-size:.75rem;border:1px solid var(--line);border-bot
       <input type="text" id="vid" value="https://www.youtube.com/watch?v=Zpu7kzkEvGE" aria-label="YouTube 連結">
       <button id="loadVid">換新影片</button>
       <button id="playBtn" class="on">▶ 播放影片</button>
+      <button id="newSong">➕ 新增歌曲</button>
     </div>
 
     <div class="card">
@@ -190,18 +191,65 @@ kbd{font-family:inherit;font-size:.75rem;border:1px solid var(--line);border-bot
     set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
   };
   let player = null, ready = false;
-  let videoId = store.get('tlp:video') || 'Zpu7kzkEvGE';
+  const sv = store.get('tlp:video');
+  let videoId = (sv === null) ? 'Zpu7kzkEvGE' : sv;   // '' = blank new song
   let lines = [];          // [{html, sec}]
   let times = [];          // seconds or null
   let active = -1, recording = false, recIdx = 0, looping = false;
   const stage = $('#stage'), lyricsEl = $('#lyrics');
-  const status = msg => { $('#status').textContent = msg; clearTimeout(status.t); status.t = setTimeout(()=>$('#status').textContent='',3500); };
+  const status = msg => { $('#status').textContent = msg; clearTimeout(status.t); status.t = setTimeout(()=>$('#status').textContent='',5000); };
   const tKey = () => 'tlp:times:' + videoId;
 
   /* ---------- YouTube ---------- */
   const parseId = s => { const m = s.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/); return m ? m[1] : (/^[\w-]{11}$/.test(s.trim()) ? s.trim() : null); };
-  $('#vid').value = 'https://www.youtube.com/watch?v=' + videoId;
-  const tag = document.createElement('script'); tag.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(tag);
+  $('#vid').value = videoId ? 'https://www.youtube.com/watch?v=' + videoId : '';
+  if(!videoId) $('#vid').placeholder = '貼上新歌的 YouTube 連結';
+  // Published pages can't load YouTube's iframe_api script, so talk to the embed directly via postMessage.
+  (function(){
+    function Player(elId, opts){
+      const self = this, ev = opts.events || {};
+      let vid = opts.videoId || '', info = { playerState: -1, currentTime: 0 }, stamp = performance.now(), rate = 1, readyFired = false, timer = null;
+      const host = document.getElementById(elId);
+      const ifr = document.createElement('iframe');
+      ifr.id = elId; ifr.allow = 'autoplay; encrypted-media; picture-in-picture'; ifr.setAttribute('allowfullscreen','');
+      const src = id => 'https://www.youtube.com/embed/' + (id || '') + '?enablejsapi=1&playsinline=1&rel=0&origin=' + encodeURIComponent(location.origin);
+      ifr.src = src(vid);
+      host.replaceWith(ifr);
+      const post = (func, args) => { try{ ifr.contentWindow.postMessage(JSON.stringify({event:'command', func, args: args || [], id: elId, channel:'widget'}), '*'); }catch(e){} };
+      const listen = () => { try{ ifr.contentWindow.postMessage(JSON.stringify({event:'listening', id: elId, channel:'widget'}), '*'); }catch(e){} };
+      ifr.addEventListener('load', () => { clearInterval(timer); let n = 0; timer = setInterval(() => { listen(); if(readyFired || ++n > 40) clearInterval(timer); }, 250); });
+      const onMsg = e => {
+        if(e.source !== ifr.contentWindow) return;
+        let d; try{ d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; }catch(err){ return; }
+        if(!d || !d.event) return;
+        if(d.event === 'onReady' || (d.event === 'initialDelivery' && !readyFired)){
+          if(d.info) Object.assign(info, d.info);
+          if(!readyFired){ readyFired = true; ev.onReady && ev.onReady({target:self}); }
+        } else if(d.event === 'infoDelivery' && d.info){
+          if('currentTime' in d.info) stamp = performance.now();
+          Object.assign(info, d.info);
+          if('playbackRate' in d.info) rate = d.info.playbackRate;
+          if(!readyFired){ readyFired = true; ev.onReady && ev.onReady({target:self}); }
+        } else if(d.event === 'onStateChange'){
+          info.playerState = d.info; stamp = performance.now(); ev.onStateChange && ev.onStateChange({data:d.info, target:self});
+        } else if(d.event === 'onError'){ ev.onError && ev.onError({data:d.info, target:self}); }
+      };
+      window.addEventListener('message', onMsg);
+      this.getPlayerState = () => info.playerState;
+      this.getCurrentTime = () => { const t = info.currentTime || 0; return info.playerState === 1 ? t + (performance.now() - stamp) / 1000 * rate : t; };
+      this.playVideo = () => post('playVideo');
+      this.pauseVideo = () => post('pauseVideo');
+      this.stopVideo = () => post('stopVideo');
+      this.seekTo = (t, a) => { info.currentTime = t; stamp = performance.now(); post('seekTo', [t, a !== false]); };
+      this.setPlaybackRate = r => { rate = r; post('setPlaybackRate', [r]); };
+      this.loadVideoById = o => { const id = typeof o === 'string' ? o : o.videoId; const st = (typeof o === 'object' && o.startSeconds) || 0; vid = id; info.currentTime = st; if(id) post('loadVideoById', [{videoId:id, startSeconds:st}]); };
+      this.cueVideoById = o => { const id = typeof o === 'string' ? o : o.videoId; vid = id; info.currentTime = 0; if(id) post('cueVideoById', [{videoId:id}]); else post('stopVideo'); };
+      this.getVideoData = () => ({ video_id: vid });
+      this.destroy = () => { window.removeEventListener('message', onMsg); clearInterval(timer); };
+    }
+    window.YT = { Player };
+    setTimeout(() => window.onYouTubeIframeAPIReady && window.onYouTubeIframeAPIReady(), 0);
+  })();
   let playOnReady = false;
   function createPlayer(){
     ready = false;
@@ -224,6 +272,7 @@ kbd{font-family:inherit;font-size:.75rem;border:1px solid var(--line);border-bot
   const alive = () => { try{ return ready && player && typeof player.getPlayerState === 'function' && player.getPlayerState() !== undefined; }catch(e){ return false; } };
   const loadedId = () => { try{ return player.getVideoData().video_id; }catch(e){ return null; } };
   function startPlay(){
+    if(!videoId){ status('請先貼上 YouTube 連結，再按「換新影片」'); return; }
     if(loadedId() !== videoId){
       player.loadVideoById({ videoId, startSeconds: 0 });   // loads + plays
     } else {
@@ -333,8 +382,9 @@ kbd{font-family:inherit;font-size:.75rem;border:1px solid var(--line);border-bot
     $('#songState').textContent = s ? '✅ 已在歌單中，之後的對時修改會自動同步' : '尚未存進歌單';
     $('#saveSong').textContent = s ? '💾 更新' : '💾 存到歌單';
   }
-  $('#saveSong').onclick = () => {
-    if(!lines.length){ status('請先載入歌詞'); return; }
+  $('#saveSong').onclick = () => saveCurrent();
+  function saveCurrent(){
+    if(!lines.length){ status('請先載入歌詞'); return false; }
     const title = $('#title').value.trim() || '未命名歌曲';
     let s = library.find(x => x.id === curId);
     if(!s){ s = { id: 's' + Date.now(), created: Date.now() }; library.unshift(s); curId = s.id; store.set('tlp:cur', curId); }
@@ -342,6 +392,30 @@ kbd{font-family:inherit;font-size:.75rem;border:1px solid var(--line);border-bot
     // most recently practiced first
     library = [s, ...library.filter(x => x !== s)];
     saveLib(); songState(); status('已存到歌單：' + title);
+    return true;
+  }
+
+  /* ---------- new blank song ---------- */
+  $('#newSong').onclick = () => {
+    let msg = '已開一首新歌，請貼上 YouTube 連結並載入歌詞';
+    if(lines.length){
+      if(!$('#title').value.trim()){
+        const t = prompt('先幫目前這首歌取個名字，存進「我的歌單」：', '');
+        if(t === null) return;                       // cancelled → do nothing
+        $('#title').value = t.trim();
+      }
+      saveCurrent();
+      msg = '「' + ($('#title').value.trim() || '未命名歌曲') + '」已存到歌單。' + msg;
+    }
+    try{ if(alive()){ player.stopVideo(); player.cueVideoById(''); } }catch(e){}
+    if(recording) $('#recBtn').click();
+    lines = []; times = []; videoId = '';
+    store.set('tlp:lyrics', []); store.set('tlp:video', '');
+    $('#vid').value = ''; $('#vid').placeholder = '貼上新歌的 YouTube 連結';
+    $('#file').value = '';
+    $('#playBtn').textContent = '▶ 播放影片';
+    newSong(); render(); stage.scrollTop = 0;
+    status(msg);
   };
   function openSong(id){
     const s = library.find(x => x.id === id); if(!s) return;
@@ -382,11 +456,17 @@ kbd{font-family:inherit;font-size:.75rem;border:1px solid var(--line);border-bot
     if(t === 'library') renderLib();
   }
   document.querySelectorAll('.tab').forEach(b => b.onclick = () => showTab(b.dataset.tab));
-  $('#libExp').onclick = () => {
-    const blob = new Blob([JSON.stringify({type:'thai-song-library', library}, null, 1)], {type:'application/json'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-    a.download = 'my_thai_songs_' + new Date().toISOString().slice(0,10) + '.json'; a.click();
-  };
+  let downloads = null;
+  (window.claude && claude.use ? claude.use('downloads') : Promise.resolve(null)).then(d => {
+    downloads = d;
+    if(!d){ ['#exp','#libExp'].forEach(s => { const b = $(s); if(b) b.hidden = true; }); }
+  }).catch(()=>{});
+  async function saveJSON(filename, obj){
+    if(!downloads){ status('這個檢視中無法下載檔案'); return; }
+    try{ await downloads.save({ filename, data: new Blob([JSON.stringify(obj, null, 1)], {type:'application/json'}) }); }
+    catch(err){ if(err && err.code !== 'declined') status('下載沒有完成'); }
+  }
+  $('#libExp').onclick = () => saveJSON('my_thai_songs_' + new Date().toISOString().slice(0,10) + '.json', {type:'thai-song-library', library});
   $('#libImp').onchange = e => e.target.files[0] && e.target.files[0].text().then(t => {
     try{
       const o = JSON.parse(t); const arr = o.library || o; if(!Array.isArray(arr)) throw 0;
@@ -472,10 +552,7 @@ kbd{font-family:inherit;font-size:.75rem;border:1px solid var(--line);border-bot
     const d = +b.dataset.off; times = times.map(t => t==null ? null : Math.max(0, +(t+d).toFixed(2))); save(); render();
     status('全部時間 ' + (d>0?'延後 ':'提前 ') + Math.abs(d) + ' 秒');
   });
-  $('#exp').onclick = () => {
-    const blob = new Blob([JSON.stringify({videoId, times}, null, 1)], {type:'application/json'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'lyrics_timing_' + videoId + '.json'; a.click();
-  };
+  $('#exp').onclick = () => saveJSON('lyrics_timing_' + videoId + '.json', {videoId, times});
   $('#imp').onchange = e => e.target.files[0] && e.target.files[0].text().then(t => {
     try{ const o = JSON.parse(t); times = o.times || o; fixTimes(); save(); render(); status('已匯入時間'); }
     catch(err){ status('時間檔格式不對'); }
